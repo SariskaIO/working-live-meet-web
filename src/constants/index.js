@@ -6,7 +6,7 @@ export const s3 = {
     }
 }
 
-export const streamingMode = 'srs' // or 'jibri'
+export const streamingMode = 'jibri' // or 'srs'
 
 export const GOOGLE_API_CLIENT_LIBRARY_URL = 'https://apis.google.com/js/api.js';
 export const GOOGLE_API_CLIENT_ID = "621897095595-k7tr68mgfrhm1935cqdq5l2vg8u7ltu8.apps.googleusercontent.com";

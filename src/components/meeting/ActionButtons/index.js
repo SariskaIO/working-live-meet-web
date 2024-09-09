@@ -304,6 +304,7 @@ const ActionButtons = ({ dominantSpeakerId }) => {
   const [broadcasts, setBroadcasts] = useState([]);
   const [streamingUrls, setStreamingUrls] = useState([]);
   const [streamKey, setStreamKey] = useState('');
+  const [isLowLatencyUrl, setIsLowLatencyUrl] = useState(false);
 
   const skipResize = false;
   const streamingSession = useRef(null);
@@ -477,11 +478,26 @@ const ActionButtons = ({ dominantSpeakerId }) => {
           action({ key: "streaming", value: true }); 
        }
     }else{
-      const session = await conference.startRecording({
-        mode: SariskaMediaTransport.constants.recording.mode.STREAM,
-        streamId: `rtmp://a.rtmp.youtube.com/live2/${streamName}`,
-      });
-      streamingSession.current = session;
+      // const session = await conference.startRecording({
+      //   mode: SariskaMediaTransport.constants.recording.mode.STREAM,
+      //   streamId: `rtmp://srs-origin-0.socs:1935/gstreamer/${streamName}`,
+      // //  streamId: `rtmp://a.rtmp.youtube.com/live2/${streamName}`,
+      // });
+      const flags = {
+        is_direct_ingestion: true,
+        is_low_latency: true
+      }
+      const streamingResponse = await startStreamingInSRSMode(null, null, flags);
+         if(streamingResponse.started){
+          const session = await conference.startRecording({
+            mode: SariskaMediaTransport.constants.recording.mode.STREAM,
+            streamId: streamingResponse.rtmp_ingest_url,
+          //  streamId: `rtmp://a.rtmp.youtube.com/live2/${streamName}`,
+          });
+          setIsLowLatencyUrl(true);
+          setStreamingUrls(streamingResponse)
+          streamingSession.current = session;
+        } 
     }
     setOpenLivestreamDialog(false);
   };
@@ -511,12 +527,22 @@ const ActionButtons = ({ dominantSpeakerId }) => {
     const streamName =
       selectedStream.result.items[0]?.cdn?.ingestionInfo?.streamName;
     setOpenLivestreamDialog(false);
-
-      const session = await conference.startRecording({
-        mode: SariskaMediaTransport.constants.recording.mode.STREAM,
-        streamId: `rtmp://a.rtmp.youtube.com/live2/${streamName}`,
-      });
-      streamingSession.current = session;
+    const flags = {
+      is_direct_ingestion: true,
+      is_low_latency: true
+    }
+    const streamingResponse = await startStreamingInSRSMode(null, null, flags);
+       if(streamingResponse.started){
+        const session = await conference.startRecording({
+          mode: SariskaMediaTransport.constants.recording.mode.STREAM,
+          streamId: streamingResponse.rtmp_ingest_url,
+        //  streamId: `rtmp://a.rtmp.youtube.com/live2/${streamName}`,
+        });
+        setIsLowLatencyUrl(true);
+        setStreamingUrls(streamingResponse)
+        streamingSession.current = session;
+       } 
+      
   };
 
   const stopStreaming = async () => {
@@ -543,6 +569,11 @@ const ActionButtons = ({ dominantSpeakerId }) => {
           action({ key: "streaming", value: false });
       }
     }else{
+      const streamingResponse = await stopStreamingInSRSMode(profile.meetingTitle);
+      if(!streamingResponse.started){
+        setIsLowLatencyUrl(false);
+        setStreamingUrls({});
+      }
       await conference.stopRecording(
         localStorage.getItem("streaming_session_id")
       );
@@ -586,7 +617,7 @@ const ActionButtons = ({ dominantSpeakerId }) => {
           <CloseIcon onClick={toggleLiveDrawer("right", false)}/>
         </Hidden>
       </Box>
-      <LiveStreamingDetails streamingUrls={streamingUrls} featureStates={featureStates} stopStreaming={stopStreaming} startStreaming={startStreaming} handleStreamKeyChange={handleStreamKeyChange} streamKey={streamKey}/>
+      <LiveStreamingDetails streamingUrls={streamingUrls} featureStates={featureStates} stopStreaming={stopStreaming} startStreaming={startStreaming} handleStreamKeyChange={handleStreamKeyChange} streamKey={streamKey} isLowLatencyUrl={isLowLatencyUrl}/>
     </>
   );
 

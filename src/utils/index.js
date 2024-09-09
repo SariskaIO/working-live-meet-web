@@ -81,8 +81,8 @@ export async function getToken(profile, name, avatarColor) {
     }
 }
 
-export async function startStreamingInSRSMode(roomName, streamKey) {
-    if(!streamKey){
+export async function startStreamingInSRSMode(roomName, streamKey, flags) {
+    if(!flags && !streamKey){
         console.log('stream key is missing');
         return;
     }
@@ -92,7 +92,7 @@ export async function startStreamingInSRSMode(roomName, streamKey) {
             'Content-Type': 'application/json',
             'Authorization': `Bearer ${localStorage.getItem("SARISKA_TOKEN")}`
         },
-        body: JSON.stringify({
+        body: streamKey ? JSON.stringify({
             stream_keys: [
                 {
                     'key': 'youtube',
@@ -100,7 +100,8 @@ export async function startStreamingInSRSMode(roomName, streamKey) {
                 }
             ],
             room_name: roomName
-        })
+            }):
+            JSON.stringify(flags)
     };
     try {
         const response = await fetch(LIVE_STREAMING_START_URL, body);
