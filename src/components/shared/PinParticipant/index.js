@@ -3,6 +3,8 @@ import zIndex from "@material-ui/core/styles/zIndex";
 import React from "react";
 import {color} from "../../../assets/styles/_color";
 import { Pin } from "../../../assets/icons";
+import { isParticipantLocal } from "../../../utils";
+import { useSelector } from "react-redux";
 
 const useStyles = makeStyles((theme) => ({
     root: {
@@ -36,14 +38,16 @@ const useStyles = makeStyles((theme) => ({
 
 const PinParticipant =  ({pinnedParticipantId, togglePinParticipant, participantId})=>{
     const classes = useStyles();
+    const conference = useSelector((state) => state.conference);
+    let isLocal =  isParticipantLocal(conference, participantId);
     return (<Box className={classes.controls}>
         { pinnedParticipantId === participantId ? 
-            <Tooltip title="Unpin Partcipant">
+            <Tooltip title={isLocal ? "unpin self" : "unpin partcipant"}>
                 <Box onClick={(e)=>togglePinParticipant(e, null, 'pin')} className={classes.unpin}>
                     <Pin />
                 </Box>
             </Tooltip> :
-            <Tooltip title="Pin Partcipant">
+            <Tooltip title={isLocal ? "pin self" : "pin partcipant"}>
                  <Box onClick={(e)=>togglePinParticipant(e, participantId, 'pin')} className={classes.pin}>
                     <Pin />
                 </Box>
