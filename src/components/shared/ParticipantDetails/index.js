@@ -18,7 +18,7 @@ import classnames from "classnames";
 import CopyMeetingLink from "../CopyMeetingLink";
 import {MenuBox} from "../MenuBox";
 import {setPinParticipant} from "../../../store/actions/layout";
-import { getParticipants } from "../../../utils";
+import { getModerator, getParticipants, isParticipantTrackMuted } from "../../../utils";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -152,7 +152,7 @@ const ParticipantDetails = () => {
     handleMenuClose(item);
   };
 
-  const [participants, setParticipants] = useState(getParticipants(conference, localUser));
+  const [participants, setParticipants] = useState(getParticipants(conference));
 
   
   const dispatch = useDispatch();
@@ -162,7 +162,7 @@ const ParticipantDetails = () => {
   };
   
   useEffect(() => {
-    setParticipants(getParticipants(conference, localUser));
+    setParticipants(getParticipants(conference));
   }, [conference.getParticipantsWithoutHidden()?.length]);
 
   const filteredParticipants = !participantName
@@ -216,15 +216,14 @@ const getAvatarColor =  (id)=> {
                         </Box>
                       </Box>
                       <Typography variant="caption">
-                        {participant?._role === "moderator" && (
+                        {(getModerator(conference)?._id === participant?._id) && (
                           <b style={{fontWeight: '300'}}>Meeting Host </b>
                         )}
                       </Typography>
                     </Box>
                   </Box>
                   <Box className={classes.iconBox}>
-                    {localTracks.find((track) => track.isAudioTrack())?.isMuted() || 
-                    remoteTracks[participant._id]?.find((track) => track.isAudioTrack())?.isMuted() ? (
+                    {isParticipantTrackMuted(localTracks, remoteTracks, participant?._id, conference, 'audio') ? (
                       <MicOffOutlinedIcon />
                     ) : (
                       <MicNoneOutlinedIcon />

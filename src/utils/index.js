@@ -634,7 +634,11 @@ export function formatBytes(bytes) {
     else return (bytes / gigaBytes).toFixed(decimal) + " GB";
 }
 
-export const getParticipants = (conference, localUser) => {
+export const getParticipants = (conference) => {
+    if(!conference){
+        return null;
+    }
+    const localUser = conference?.getLocalUser();
     return [...conference.getParticipantsWithoutHidden(), { _identity: { user: localUser }, _id: localUser.id }]
 }
 
@@ -643,4 +647,42 @@ export const muteParticipant = async(conference, participantId, mediaType) => {
         return;
     }
     await conference.muteParticipant(participantId, mediaType)
+}
+
+export const isParticipantTrackMuted = (localTracks, remoteTracks, id, conference, mediaType) => {
+    let track;
+    if(conference.myUserId() === id){
+        track = localTracks;
+     }else{
+        track = remoteTracks[id];
+     }
+     if(track){
+        if(mediaType === 'audio'){
+           return track.find((track) => track.isAudioTrack())?.isMuted();
+        }else{
+          return  track.find((track) => track.isVideoTrack())?.isMuted();
+        }
+     }else{
+        return undefined;
+     }
+}
+
+export const getModerator = (conference) => {
+    if(!conference){
+        return null;
+    }
+    let moderator;
+    let participants = getParticipants(conference);
+    participants.forEach(participant => {
+        if(conference.myUserId() === participant?._id){
+            if(conference.isModerator()){
+                moderator = participant;
+            }; 
+        }else{
+            if(participant?._role === "moderator"){
+                moderator = participant;
+            }
+        }
+    })
+    return moderator;
 }
