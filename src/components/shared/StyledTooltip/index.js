@@ -12,7 +12,7 @@ const CSSTooltip = withStyles({
 
 const StyledTooltip = (props) => {
   return (
-    <CSSTooltip {...props}>
+    <CSSTooltip {...props} disableFocusListener={props?.disabled} disableHoverListener={props?.disabled} disableTouchListener={props?.disabled}>
         {props.children}
     </CSSTooltip>
   )

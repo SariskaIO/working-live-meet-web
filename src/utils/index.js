@@ -686,3 +686,10 @@ export const getModerator = (conference) => {
     })
     return moderator;
 }
+
+export const isParticipantLocal = (conference, id) => {
+    if(!conference && !id){
+        return;
+    }
+    return conference?.myUserId()===id;
+}
