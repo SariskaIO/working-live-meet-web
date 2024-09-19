@@ -348,7 +348,6 @@ const LobbyRoom = ({ tracks }) => {
     conference.addEventListener(
       SariskaMediaTransport.events.conference.USER_ROLE_CHANGED,
       (id, role) => {
-        console.log('USER_ROLE_CHANGED', id, role)
         if (conference.isModerator() && !testMode) {
           conference.enableLobby();
           history.push(`/${meetingTitle}`);

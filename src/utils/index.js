@@ -60,7 +60,8 @@ export async function getToken(profile, name, avatarColor) {
                 id: profile.id,
                 avatar: avatarColor,
                 name: name,
-                email: profile.email
+                email: profile.email,
+               // moderator: name === 'admin' ? true : false
             },
             exp: "48 hours"
         })
@@ -81,8 +82,8 @@ export async function getToken(profile, name, avatarColor) {
     }
 }
 
-export async function startStreamingInSRSMode(roomName, streamKey) {
-    if(!streamKey){
+export async function startStreamingInSRSMode(roomName, streamKey, flags) {
+    if(!flags && !streamKey){
         console.log('stream key is missing');
         return;
     }
@@ -92,7 +93,7 @@ export async function startStreamingInSRSMode(roomName, streamKey) {
             'Content-Type': 'application/json',
             'Authorization': `Bearer ${localStorage.getItem("SARISKA_TOKEN")}`
         },
-        body: JSON.stringify({
+        body: streamKey ? JSON.stringify({
             stream_keys: [
                 {
                     'key': 'youtube',
@@ -100,7 +101,8 @@ export async function startStreamingInSRSMode(roomName, streamKey) {
                 }
             ],
             room_name: roomName
-        })
+            }):
+            JSON.stringify(flags)
     };
     try {
         const response = await fetch(LIVE_STREAMING_START_URL, body);
@@ -632,6 +634,55 @@ export function formatBytes(bytes) {
     else return (bytes / gigaBytes).toFixed(decimal) + " GB";
 }
 
-export const getParticipants = (conference, localUser) => {
+export const getParticipants = (conference) => {
+    if(!conference){
+        return null;
+    }
+    const localUser = conference?.getLocalUser();
     return [...conference.getParticipantsWithoutHidden(), { _identity: { user: localUser }, _id: localUser.id }]
+}
+
+export const muteParticipant = async(conference, participantId, mediaType) => {
+    if(!conference){
+        return;
+    }
+    await conference.muteParticipant(participantId, mediaType)
+}
+
+export const isParticipantTrackMuted = (localTracks, remoteTracks, id, conference, mediaType) => {
+    let track;
+    if(conference.myUserId() === id){
+        track = localTracks;
+     }else{
+        track = remoteTracks[id];
+     }
+     if(track){
+        if(mediaType === 'audio'){
+           return track.find((track) => track.isAudioTrack())?.isMuted();
+        }else{
+          return  track.find((track) => track.isVideoTrack())?.isMuted();
+        }
+     }else{
+        return undefined;
+     }
+}
+
+export const getModerator = (conference) => {
+    if(!conference){
+        return null;
+    }
+    let moderator;
+    let participants = getParticipants(conference);
+    participants.forEach(participant => {
+        if(conference.myUserId() === participant?._id){
+            if(conference.isModerator()){
+                moderator = participant;
+            }; 
+        }else{
+            if(participant?._role === "moderator"){
+                moderator = participant;
+            }
+        }
+    })
+    return moderator;
 }

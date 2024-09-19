@@ -177,7 +177,7 @@ export const MenuBox = ({
           ? "Unpin from screen"
           : "Pin to screen"} />
         </StyledMenuItem>
-        {/* <StyledMenuItem
+        <StyledMenuItem
           key={1}
           selected={
             pinnedParticipant.participantId === id
@@ -194,7 +194,7 @@ export const MenuBox = ({
             <RemoveCircleOutlineIcon />  
           </ListItemIcon>
           <ListItemText primary={"Remove from the call"} />
-      </StyledMenuItem> */}
+      </StyledMenuItem>
       {/* {options.map((option, index) => (
         <StyledMenuItem
           key={index}

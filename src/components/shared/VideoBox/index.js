@@ -1,27 +1,21 @@
 import {
-  Avatar,
   Box,
   makeStyles,
-  Tooltip,
   Typography,
 } from "@material-ui/core";
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import { color } from "../../../assets/styles/_color";
 import Video from "../Video";
 import Audio from "../Audio";
 import PanTool from "@material-ui/icons/PanTool";
-import { useDispatch, useSelector } from "react-redux";
-import MicIcon from "@material-ui/icons/Mic";
-import MicOffIcon from "@material-ui/icons/MicOff";
-import { setPinParticipant } from "../../../store/actions/layout";
-import PinParticipant from "../PinParticipant";
+import { useSelector } from "react-redux";
 import classnames from "classnames";
-import { videoShadow, calculateSteamHeightAndExtraDiff, isMobileOrTab } from "../../../utils";
-import AudioLevelIndicator from "../AudioIndicator";
+import { calculateSteamHeightAndExtraDiff, isMobileOrTab } from "../../../utils";
 import SubTitle from "../SubTitle";
 import { useDocumentSize } from "../../../hooks/useDocumentSize";
-import { profile } from "../../../store/reducers/profile";
-import { useWindowResize } from "../../../hooks/useWindowResize";
+import ParticipantFeaturesBox from "../ParticipantFeaturesBox";
+import MutedVideo from "../MutedVideo";
+import AudioLevelIndicator from "../AudioIndicator";
 
 const VideoBox = ({
   participantTracks,
@@ -175,21 +169,12 @@ const VideoBox = ({
     );
   }
   const audioTrack = participantTracks?.find((track) => track?.isAudioTrack());
-  const audioIndicator = useSelector((state) => state.audioIndicator);
-  const dispatch = useDispatch();
-  const [visiblePinParticipant, setVisiblePinPartcipant] = useState(true);
-  let audioLevel = audioIndicator[participantDetails?.id];
+  const [visibleParticipantFeatures, setVisibleParticipantFeatures] = useState(false);
   const subtitle = useSelector((state) => state.subtitle);
   const conference = useSelector((state) => state.conference);
   const { documentWidth, documentHeight } = useDocumentSize();
 
-  const togglePinParticipant = (id) => {
-    dispatch(setPinParticipant(id, isPresenter));
-  };
 
-  const audioIndicatorActiveClasses = classnames(classes.avatar, {
-    largeVideo: isLargeVideo,
-  });
 
   const avatarActiveClasses = classnames(classes.avatarBox);
   const { videoStreamHeight, videoStreamDiff } =
@@ -201,7 +186,6 @@ const VideoBox = ({
       isPresenter,
       isActiveSpeaker
     );
-  let avatarColor = participantDetails?.avatar || profile?.color;
 
    const getVideoContainerWidth = (videoStreamHeight) => {
       if(isMobileOrTab()) {
@@ -209,37 +193,39 @@ const VideoBox = ({
       }
       return `${(videoStreamHeight * 16) / 9}px`
     }
-
+    
   return (
     <Box
       style={{ width: `${width}px`, height: `${height}px` }}
-      onMouseEnter={() => setVisiblePinPartcipant(true)}
-      onMouseLeave={() => setVisiblePinPartcipant(false)}
+      onMouseEnter={() => setVisibleParticipantFeatures(true)}
+      onMouseLeave={() => setVisibleParticipantFeatures(false)}
       className={classes.root}
     >
       {conference?.getParticipantCount() > 1 &&
         isActiveSpeaker &&
         !isPresenter && <div className={classes.videoBorder}></div>}
       <Box className={classnames(classes.audioBox, { audioBox: true })}>
-        {audioTrack?.isMuted() ? <MicOffIcon /> : <MicIcon />}
         {!audioTrack?.isLocal() && <Audio track={audioTrack} />}
       </Box>
+      {visibleParticipantFeatures ? 
+        <ParticipantFeaturesBox 
+        pinnedParticipant={pinnedParticipant} 
+        participantDetails={participantDetails} 
+        isPresenter={isPresenter} 
+        audioTrack={audioTrack} 
+        videoTrack={videoTrack} 
+        height={height}   
+        />
+        : null 
+      }
       {videoTrack?.isMuted() ? (
         <Box className={avatarActiveClasses}>
-          <Avatar
-            src={null}
-            style={
-              isFilmstrip
-                ? {
-                    boxShadow: videoShadow(audioLevel),
-                    background: avatarColor,
-                  }
-                : { background: avatarColor }
-            }
-            className={audioIndicatorActiveClasses}
-          >
-            {participantDetails?.name?.slice(0, 1)?.toUpperCase()}
-          </Avatar>
+          <MutedVideo 
+            isFilmstrip={isFilmstrip} 
+            participantDetails={participantDetails} 
+            numParticipants={numParticipants} 
+            isLargeVideo={isLargeVideo}
+          />
         </Box>
       ) : (
         <Box
@@ -257,13 +243,6 @@ const VideoBox = ({
       <Box
         className={classnames(classes.rightControls, { rightControls: true })}
       >
-        {visiblePinParticipant && (
-          <PinParticipant
-            participantId={participantDetails?.id}
-            pinnedParticipantId={pinnedParticipant.participantId}
-            togglePinParticipant={togglePinParticipant}
-          />
-        )}
         {raisedHandParticipantIds[participantDetails?.id] && (
           <Typography className={classes.handRaise}>
             <PanTool />
@@ -279,7 +258,7 @@ const VideoBox = ({
       </Box>
       {!isFilmstrip && (
         <Box>
-          <AudioLevelIndicator passedAudioLevel={audioLevel} />
+          <AudioLevelIndicator participantDetails={participantDetails} />
         </Box>
       )}
       {isTranscription && subtitle.text && (

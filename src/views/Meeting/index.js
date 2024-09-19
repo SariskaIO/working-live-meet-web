@@ -1,4 +1,4 @@
-import { Box, Hidden, makeStyles } from "@material-ui/core";
+import { Box, makeStyles } from "@material-ui/core";
 import React, { useEffect, useState } from "react";
 import { color } from "../../assets/styles/_color";
 import ActionButtons from "../../components/meeting/ActionButtons";
@@ -9,8 +9,8 @@ import {
   addRemoteTrack,
   participantLeft,
   removeRemoteTrack,
-  updateLocalTrack,
   remoteTrackMutedChanged,
+  localTrackMutedChanged,
 } from "../../store/actions/track";
 import GridLayout from "../../components/meeting/GridLayout";
 import SpeakerLayout from "../../components/meeting/SpeakerLayout";
@@ -23,7 +23,7 @@ import {
   ENTER_FULL_SCREEN_MODE,
 } from "../../constants";
 import { addMessage } from "../../store/actions/message";
-import { getUserById, preloadIframes, getDefaultDeviceId, isPortrait, isMobileOrTab } from "../../utils";
+import { getUserById, preloadIframes, isMobileOrTab } from "../../utils";
 import PermissionDialog from "../../components/shared/PermissionDialog";
 import SnackbarBox from "../../components/shared/Snackbar";
 import { unreadMessage } from "../../store/actions/chat";
@@ -33,7 +33,6 @@ import {
   setPinParticipant,
   setRaiseHand,
   setModerator,
-  setDisconnected,
   setLayout,
 } from "../../store/actions/layout";
 import { setAudioLevel } from "../../store/actions/audioIndicator";
@@ -266,6 +265,9 @@ const Meeting = () => {
       SariskaMediaTransport.events.conference.TRACK_MUTE_CHANGED,
       (track) => {
         dispatch(remoteTrackMutedChanged());
+        if(conference?.myUserId() === track?.getParticipantId()){
+          dispatch(localTrackMutedChanged());
+        }
       }
     );
 
@@ -467,6 +469,7 @@ const Meeting = () => {
       (id) => {
         // if a user kicked by moderator
         // kicked participant id
+       history.push(`/leave`, {isRemoved: true});
       }
     );
 

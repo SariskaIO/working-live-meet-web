@@ -1,8 +1,8 @@
 import { Box, makeStyles, Typography } from '@material-ui/core'
-import React, {useEffect} from 'react'
-import {Link, useHistory, useParams} from 'react-router-dom';
+import React from 'react'
+import { useHistory, useLocation} from 'react-router-dom';
 import { color } from '../../assets/styles/_color';
-import {useSelector} from "react-redux";
+import { useSelector} from "react-redux";
 import FancyButton from '../../components/shared/FancyButton';
 
 const useStyles = makeStyles((theme) => ({
@@ -29,15 +29,17 @@ const Leave = () => {
     const meetingTitle  = useSelector(state=>state.profile?.meetingTitle);
     const classes = useStyles();
     const history = useHistory();
+    const location = useLocation();
+    const { isRemoved } = location.state || {};
 
     return (
         <Box className={classes.root}>
-            <Typography variant="h3" className={classes.title}>You have left the meeting</Typography>
+            <Typography variant="h3" className={classes.title}>{`You have ${isRemoved ? 'been removed from' : 'left'} the meeting`}</Typography>
             <Box>
-                <FancyButton 
+            {!isRemoved ?  <FancyButton 
                     onClick={()=>history.push(`/${meetingTitle}`)}
                     buttonText = 'Rejoin'
-                />
+                /> : null }
                 &nbsp; &nbsp;
                 <FancyButton 
                     onClick={()=>history.push(`/`)}

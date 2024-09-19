@@ -1,6 +1,7 @@
 import React from 'react';
 import {makeStyles} from "@material-ui/core";
 import { color } from '../../../assets/styles/_color';
+import { useSelector } from 'react-redux';
 const AUDIO_LEVEL_DOTS = 5;
 const CENTER_DOT_INDEX = Math.floor(AUDIO_LEVEL_DOTS / 2);
 
@@ -41,7 +42,11 @@ const useStyles = makeStyles((theme) => ({
     }
 }));
 
-const AudioLevelIndicator = ({passedAudioLevel}) => {
+const AudioLevelIndicator = ({participantDetails}) => {
+
+    const audioIndicator = useSelector((state) => state.audioIndicator);
+    let passedAudioLevel = audioIndicator[participantDetails?.id];
+
     const classes  = useStyles();
     const audioLevel = typeof passedAudioLevel === 'number' && !isNaN(passedAudioLevel)
         ? Math.min(passedAudioLevel * 1.2, 1) : 0;
