@@ -60,7 +60,8 @@ export async function getToken(profile, name, avatarColor) {
                 id: profile.id,
                 avatar: avatarColor,
                 name: name,
-                email: profile.email
+                email: profile.email,
+               // moderator: name === 'admin' ? true : false
             },
             exp: "48 hours"
         })
@@ -635,4 +636,11 @@ export function formatBytes(bytes) {
 
 export const getParticipants = (conference, localUser) => {
     return [...conference.getParticipantsWithoutHidden(), { _identity: { user: localUser }, _id: localUser.id }]
+}
+
+export const muteParticipant = async(conference, participantId, mediaType) => {
+    if(!conference){
+        return;
+    }
+    await conference.muteParticipant(participantId, mediaType)
 }

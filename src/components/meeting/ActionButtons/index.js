@@ -19,6 +19,10 @@ import MicIcon from "@material-ui/icons/Mic";
 import MicOffIcon from "@material-ui/icons/MicOff";
 import VideocamIcon from "@material-ui/icons/Videocam";
 import VideocamOffIcon from "@material-ui/icons/VideocamOff";
+import VolumeUpIcon from '@material-ui/icons/VolumeUp';
+import VideoCallIcon from '@material-ui/icons/VideoCall';
+import VolumeOffIcon from '@material-ui/icons/VolumeOff';
+import PlayArrowIcon from '@material-ui/icons/PlayArrow';
 import ScreenShareIcon from "@material-ui/icons/ScreenShare";
 import StopScreenShareIcon from '@material-ui/icons/StopScreenShare';
 import PanToolIcon from "@material-ui/icons/PanTool";
@@ -58,6 +62,7 @@ import {
   exitFullscreen,
   formatAMPM,
   isFullscreen,
+  muteParticipant,
   requestFullscreen,
   startStreamingInSRSMode,
   stopStreamingInSRSMode,
@@ -334,6 +339,36 @@ const ActionButtons = ({ dominantSpeakerId }) => {
     dispatch(localTrackMutedChanged());
   };
 
+  const muteAll = async(type) => {
+    if(!conference.isModerator()){
+      return dispatch(
+        showNotification({
+          message: "You are not moderator",
+          severity: "warning",
+          autoHide: true,
+        })
+      )
+    }
+    let participants = conference?.getParticipantsWithoutHidden();
+    try {
+      for (const participant of participants) {
+        const participantId = participant.getId();
+  
+        // Mute audio for the participant
+        await muteParticipant(conference, participantId, type);
+      }
+      dispatch(
+        showNotification({
+          message: "All participants have been muted",
+          severity: "success",
+          autoHide: true,
+        })
+      )
+    } catch (error) {
+      console.error('Error muting participants:', error);
+    }
+  }
+
   const shareScreen = async () => {
     let desktopTrack;
     try {
@@ -451,7 +486,6 @@ const ActionButtons = ({ dominantSpeakerId }) => {
       setOpenLivestreamDialog(true);
     }
   };
-
   const createLiveStream = async () => {
     const title = `test__${Date.now()}`;
     const resposne = await googleApi.createLiveStreams(title);
@@ -535,7 +569,8 @@ const ActionButtons = ({ dominantSpeakerId }) => {
        if(streamingResponse.started){
         const session = await conference.startRecording({
           mode: SariskaMediaTransport.constants.recording.mode.STREAM,
-          streamId: streamingResponse.rtmp_ingest_url,
+          streamId: "rtmp://streaming-origin-nlb-tcp-c078e5862a925d80.elb.ap-south-1.amazonaws.com:1935/xcq9u1vjc9udbq44/b38c2fa6f74043d38a44922a3ad961fa"
+          //streamId: streamingResponse.rtmp_ingest_url,
         //  streamId: `rtmp://a.rtmp.youtube.com/live2/${streamName}`,
         });
         setIsLowLatencyUrl(true);
@@ -1034,6 +1069,16 @@ const ActionButtons = ({ dominantSpeakerId }) => {
             <VideocamIcon onClick={muteVideo} />
           )}
         </StyledTooltip>
+        <StyledTooltip
+          title={"Mute All Cameras"}
+        >
+            <VideoCallIcon onClick={() => muteAll('video')} />
+        </StyledTooltip>
+        <StyledTooltip
+          title={"Mute All Microphones"}
+        >
+          <VolumeUpIcon onClick={() => muteAll('audio')} />
+        </StyledTooltip>
         <StyledTooltip title={presenting ? "Stop Presenting" : "Share Screen"}>
           {presenting ? (
             <StopScreenShareIcon className={classnames(classes.active, classes.screenShare)}
@@ -1101,6 +1146,7 @@ const ActionButtons = ({ dominantSpeakerId }) => {
           <CallEndIcon onClick={leaveConference} className={classes.end} />
         </StyledTooltip>
       </Hidden>
+
         <StyledTooltip title="More Actions">
           <MoreVertIcon
             onClick={toggleMoreActionDrawer("right", true)}

@@ -11,6 +11,7 @@ import {
   removeRemoteTrack,
   updateLocalTrack,
   remoteTrackMutedChanged,
+  localTrackMutedChanged,
 } from "../../store/actions/track";
 import GridLayout from "../../components/meeting/GridLayout";
 import SpeakerLayout from "../../components/meeting/SpeakerLayout";
@@ -266,6 +267,9 @@ const Meeting = () => {
       SariskaMediaTransport.events.conference.TRACK_MUTE_CHANGED,
       (track) => {
         dispatch(remoteTrackMutedChanged());
+        if(conference?.myUserId() === track?.getParticipantId()){
+          dispatch(localTrackMutedChanged());
+        }
       }
     );
 

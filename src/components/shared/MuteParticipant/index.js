@@ -3,6 +3,9 @@ import zIndex from "@material-ui/core/styles/zIndex";
 import React from "react";
 import {color} from "../../../assets/styles/_color";
 import { Pin } from "../../../assets/icons";
+import Mic from "../../../assets/icons/Mic";
+import Audio from "../Audio";
+import Camera from "../../../assets/icons/Camera";
 
 const useStyles = makeStyles((theme) => ({
     root: {
@@ -16,14 +19,14 @@ const useStyles = makeStyles((theme) => ({
     },
     controls: {
         cursor: "pointer",
-        color: "white",
+        color: "#aaa",
         height: "24px",
         width: "24px",
     },
     unpin: {
-        color: "#27CED7",
+        fill: "#27CED7",
         "& svg": {
-            fill: color.primaryLight,
+            fill: color.white,
         }
     },
     pin: {
@@ -34,21 +37,21 @@ const useStyles = makeStyles((theme) => ({
     }
 }));
 
-const PinParticipant =  ({pinnedParticipantId, togglePinParticipant, participantId})=>{
+const MuteParticipant =  ({mediaType, isMuted, toggleMute, id})=>{
     const classes = useStyles();
     return (<Box className={classes.controls}>
-        { pinnedParticipantId === participantId ? 
-            <Tooltip title="Unpin Partcipant">
-                <Box onClick={(e)=>togglePinParticipant(e, null, 'pin')} className={classes.unpin}>
-                    <Pin />
+        { isMuted ? 
+            <Tooltip title="Partcipant is muted">
+                <Box className={classes.unpin}>
+                    { mediaType === 'audio' ? <Mic isMuted={true} /> : <Camera isMuted={true} /> }
                 </Box>
             </Tooltip> :
-            <Tooltip title="Pin Partcipant">
-                 <Box onClick={(e)=>togglePinParticipant(e, participantId, 'pin')} className={classes.pin}>
-                    <Pin />
+            <Tooltip title="Mute Partcipant">
+                 <Box onClick={(e) => toggleMute(e, id, mediaType)} className={classes.pin}>
+                 { mediaType === 'audio' ? <Mic isMuted={false} /> : <Camera isMuted={false} /> }
                 </Box>
             </Tooltip>}
     </Box>);
 }
 
-export default PinParticipant;
+export default MuteParticipant;
