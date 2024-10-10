@@ -837,21 +837,21 @@ const handleCollaborartion = () => {
 };
 
 const actionHandlers = [
-  [
-    "play",
-    async () => {
-      console.log("plsay");
-      handleCollaborartion();
-    },
-  ],
-  [
-    "pause",
-    async () => {
-      console.log("pause");
+//   [
+//     "play",
+//     async () => {
+//       console.log("plsay");
+//       handleCollaborartion();
+//     },
+//   ],
+//   [
+//     "pause",
+//     async () => {
+//       console.log("pause");
 
-      handleCollaborartion();
-    },
-  ],
+//       handleCollaborartion();
+//     },
+//   ],
   [
     "togglemicrophone",
     async (e) => {
@@ -888,25 +888,25 @@ const actionHandlers = [
       );
     },
   ],
-  [
-    "hangup",
-    (e) => {
-      window.close();
-      let profile = store.getState()?.profile;
-      window.storage.local.set(
-        {
-          currentSessionDetails: {
-            session_id: profile.meetingTitle,
-            color: profile.color,
-            name: profile.name,
-            id: profile.id,
-            collaboration: false,
-          },
-        },
-        () => {}
-      );
-    },
-  ],
+//   [
+//     "hangup",
+//     (e) => {
+//       window.close();
+//       let profile = store.getState()?.profile;
+//       window.storage.local.set(
+//         {
+//           currentSessionDetails: {
+//             session_id: profile.meetingTitle,
+//             color: profile.color,
+//             name: profile.name,
+//             id: profile.id,
+//             collaboration: false,
+//           },
+//         },
+//         () => {}
+//       );
+//     },
+//   ],
 ];
 
 // Function to handle adding the conference event listeners
