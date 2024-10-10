@@ -91,70 +91,74 @@ export async function getToken(profile, name, avatarColor) {
 }
 
 export async function startStreamingInSRSMode(roomName, streamKey, flags) {
-  if (!flags && !streamKey) {
-    return;
-  }
-  const body = {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-      Authorization: `Bearer ${localStorage.getItem("SARISKA_TOKEN")}`,
-    },
-    body: streamKey
-      ? JSON.stringify({
-          stream_keys: [
-            {
-              key: "youtube",
-              value: streamKey,
-            },
-          ],
-          room_name: roomName,
-        })
-      : JSON.stringify(flags),
-  };
-  try {
-    const response = await fetch(LIVE_STREAMING_START_URL, body);
-    if (response.ok) {
-      const json = await response.json();
-      return json;
-    } else {
-      console.log(response.message);
+    if(!flags && !streamKey){
+        console.log('stream key is missing');
+        return;
     }
-  } catch (error) {
-    console.log("error", error);
+    const body = {
+        method: "POST",
+        headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${localStorage.getItem("SARISKA_TOKEN")}`
+        },
+        body: streamKey ? JSON.stringify({
+            stream_keys: [
+                {
+                    'key': 'youtube',
+                    'value': streamKey
+                }
+            ],
+            room_name: roomName,
+            is_low_latency: true
+            }):
+            JSON.stringify(flags)
+    };
+    try {
+        const response = await fetch(LIVE_STREAMING_START_URL, body);
+        if (response.ok) {
+            const json = await response.json();
+            return json;
+        } else {
+            console.log(response.message);
+        }
+    } catch (error) {
+        console.log('error', error);
   }
 }
 
 export async function stopStreamingInSRSMode(roomName) {
-  const body = {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-      Authorization: `Bearer ${localStorage.getItem("SARISKA_TOKEN")}`,
-    },
-    body: JSON.stringify({
-      room_name: roomName,
-    }),
-  };
-  try {
-    const response = await fetch(LIVE_STREAMING_STOP_URL, body);
-    if (response.ok) {
-      const json = await response.json();
-      return json;
-    } else {
-      console.log("Got some error in stopping streaming");
-    }
-  } catch (error) {
-    console.log("error", error);
+    const body = {
+        method: "POST",
+        headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${localStorage.getItem("SARISKA_TOKEN")}`
+        },
+        body: JSON.stringify({
+            room_name: roomName,
+            is_low_latency: true
+        })
+    };
+    try {
+        const response = await fetch(LIVE_STREAMING_STOP_URL, body);
+        if (response.ok) {
+            const json = await response.json();
+            return json;
+        } else {
+            console.log("Got some error in stopping streaming");
+        }
+    } catch (error) {
+        console.log('error', error);
   }
 }
 
 export const getUserById = (id, conference) => {
-  if (id === conference.myUserId()) {
-    return conference.getLocalUser();
-  }
-  return conference?.participants[id]?._identity?.user;
-};
+    if (id === conference.myUserId()) {
+        return conference.getLocalUser()
+    }
+    let participants = conference?.getParticipantsWithoutHidden();
+    let participant = participants.find(participant => participant?._id === id)
+    return participant?._identity?.user
+}
 
 export const clearAllTokens = () => {
   Object.entries(localStorage)
