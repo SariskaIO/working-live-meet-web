@@ -100,7 +100,8 @@ export async function startStreamingInSRSMode(roomName, streamKey, flags) {
                     'value': streamKey
                 }
             ],
-            room_name: roomName
+            room_name: roomName,
+            is_low_latency: true
             }):
             JSON.stringify(flags)
     };
@@ -125,7 +126,8 @@ export async function stopStreamingInSRSMode(roomName) {
             'Authorization': `Bearer ${localStorage.getItem("SARISKA_TOKEN")}`
         },
         body: JSON.stringify({
-            room_name: roomName
+            room_name: roomName,
+            is_low_latency: true
         })
     };
     try {
@@ -142,10 +144,12 @@ export async function stopStreamingInSRSMode(roomName) {
 }
 
 export const getUserById = (id, conference) => {
-     if (id === conference.myUserId()) {
-         return conference.getLocalUser()
-     }
-     return conference?.participants[id]?._identity?.user
+    if (id === conference.myUserId()) {
+        return conference.getLocalUser()
+    }
+    let participants = conference?.getParticipantsWithoutHidden();
+    let participant = participants.find(participant => participant?._id === id)
+    return participant?._identity?.user
 }
 
 export const clearAllTokens = () => {
