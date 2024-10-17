@@ -87,7 +87,6 @@ export const layout = (state = initialState, action) => {
       state.presentationType = action.payload.presentationType;
       return { ...state };
     case TOGGLE_PIP:
-      console.log("toggle pip", action.payload);
       state.pipEnabled = action.payload;
       return { ...state };
     default:

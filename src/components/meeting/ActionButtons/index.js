@@ -1118,12 +1118,15 @@ const ActionButtons = ({ dominantSpeakerId }) => {
             <VideocamIcon onClick={muteVideo} />
           )}
         </StyledTooltip>
-        <StyledTooltip title={"Mute All Cameras"}>
-          <VideoCallIcon onClick={() => muteAll("video")} />
-        </StyledTooltip>
-        <StyledTooltip title={"Mute All Microphones"}>
-          <VolumeUpIcon onClick={() => muteAll("audio")} />
-        </StyledTooltip>
+        <Hidden smDown>
+          <StyledTooltip title={"Mute All Cameras"}>
+            <VideoCallIcon onClick={() => muteAll("video")} />
+          </StyledTooltip>
+          <StyledTooltip title={"Mute All Microphones"}>
+            <VolumeUpIcon onClick={() => muteAll("audio")} />
+          </StyledTooltip>
+        </Hidden>
+        
         <StyledTooltip title={presenting ? "Stop Presenting" : "Share Screen"}>
           {presenting ? (
             <StopScreenShareIcon
@@ -1147,30 +1150,33 @@ const ActionButtons = ({ dominantSpeakerId }) => {
             <PanToolIcon onClick={startRaiseHand} className={classes.panTool} />
           )}
         </StyledTooltip>
-        <StyledTooltip
-          title={
-            layout.pipEnabled
-              ? "Exit Picure-in-Picture"
-              : "Enable Picure-in-Picture"
-          }
-        >
-          <PictureInPictureAltIcon
-            disabled={!("pictureInPictureEnabled" in document)}
-            id="pict"
-            onClick={() => {
-              if (isCollaborationActive) {
-                exitPipMode();
-              } else {
-                startPipMode();
-              }
-            }}
-            sx={{
-              fill: layout.pipEnabled ? color.primaryColor : color.white,
-              "&:hover": { pointer: "cursor" },
-              zIndex: 2,
-            }}
-          />
-        </StyledTooltip>
+        <Hidden smDown>
+          <StyledTooltip
+            title={
+              layout.pipEnabled
+                ? "Exit Picure-in-Picture"
+                : "Enable Picure-in-Picture"
+            }
+          >
+            <PictureInPictureAltIcon
+              disabled={!("pictureInPictureEnabled" in document)}
+              id="pict"
+              onClick={() => {
+                if (isCollaborationActive) {
+                  exitPipMode();
+                } else {
+                  startPipMode();
+                }
+              }}
+              sx={{
+                fill: layout.pipEnabled ? color.primaryColor : color.white,
+                "&:hover": { pointer: "cursor" },
+                zIndex: 2,
+              }}
+            />
+          </StyledTooltip>
+        </Hidden>
+        
         <Hidden smDown>
           <StyledTooltip title="Participants Details">
             <GroupIcon onClick={toggleParticipantDrawer("right", true)} />
