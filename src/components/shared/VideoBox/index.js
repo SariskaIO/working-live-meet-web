@@ -158,7 +158,7 @@ const VideoBox = ({
     },
   }));
   const classes = useStyles();
-  const [isPipEnabled, setIsPipEnabled] = useState(false);
+  const isPipEnabled = useSelector(state => state.layout?.pipEnabled);
   const { pinnedParticipant, raisedHandParticipantIds } = useSelector(
     (state) => state.layout
   );
@@ -175,7 +175,6 @@ const VideoBox = ({
   const subtitle = useSelector((state) => state.subtitle);
   const conference = useSelector((state) => state.conference);
   const { documentWidth, documentHeight } = useDocumentSize();
-  const layout = useSelector((state) => state.layout);
 
 
 
@@ -197,10 +196,6 @@ const VideoBox = ({
       return `${(videoStreamHeight * 16) / 9}px`
     }
     
-    useEffect(()=>{
-      setIsPipEnabled(layout.pipEnabled);
-    }, [layout.pipEnabled]);
-
   return (
     <Box
       style={{ width: `${width}px`, height: `${height}px` }}
@@ -234,7 +229,7 @@ const VideoBox = ({
             isLargeVideo={isLargeVideo}
           />
         </Box>
-      ) : (
+      ) : isPipEnabled ? (
         <Box
           style={{
             width: getVideoContainerWidth(videoStreamHeight),
@@ -242,17 +237,28 @@ const VideoBox = ({
             left: `-${videoStreamDiff / 2}px`,
             position: "absolute",
             right: 0,
-            left: 0,
             top: 0,
             bottom: 0,
-            backgroundColor: isPipEnabled ?  "black" : "default",
+            backgroundColor: "black",
             margin: "auto",
           }}
           className={classes.videoWrapper}
         >
           <Video isPresenter={isPresenter}isPipEnabled={isPipEnabled} track={videoTrack} />
         </Box>
-      )}
+      ) : (<Box
+          style={{
+            width: getVideoContainerWidth(videoStreamHeight),
+            height: `${videoStreamHeight}px`,
+            left: `-${videoStreamDiff / 2}px`,
+            position: "absolute"
+          }}
+          className={classes.videoWrapper}
+        >
+          <Video isPresenter={isPresenter}isPipEnabled={isPipEnabled} track={videoTrack} />
+        </Box>
+      )
+      }
       <Box
         className={classnames(classes.rightControls, { rightControls: true })}
       >
