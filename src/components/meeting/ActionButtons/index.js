@@ -273,7 +273,7 @@ const useStyles = makeStyles((theme) => ({
     width: "260px",
     padding: theme.spacing(1, 0, 0, 0),
     backgroundColor: color.secondary,
-  },
+  }, 
 }));
 
 const ActionButtons = ({ dominantSpeakerId }) => {
@@ -1036,11 +1036,19 @@ const ActionButtons = ({ dominantSpeakerId }) => {
     );
   }, []);
 
-  const leaveConference = () => {
-    dispatch(clearAllReducers());
-    history.push("/leave");
-  };
 
+  const leaveConference = async () => {
+    try {
+      if (layout.pipEnabled && document.pictureInPictureElement) {
+        await document.exitPictureInPicture(); 
+      }
+      dispatch(clearAllReducers());
+      history.push("/leave");
+    } catch (error) {
+      console.error("Failed to exit Picture-in-Picture mode:", error);
+    }
+  };
+  
   useEffect(() => {
     setIsCollaborationActive(layout.pipEnabled);
   }, [layout.pipEnabled]);
@@ -1160,6 +1168,7 @@ const ActionButtons = ({ dominantSpeakerId }) => {
           >
             <PictureInPictureAltIcon
               disabled={!("pictureInPictureEnabled" in document)}
+              className={classes.pict}
               id="pict"
               onClick={() => {
                 if (isCollaborationActive) {
@@ -1172,6 +1181,7 @@ const ActionButtons = ({ dominantSpeakerId }) => {
                 fill: layout.pipEnabled ? color.primaryColor : color.white,
                 "&:hover": { pointer: "cursor" },
                 zIndex: 2,
+
               }}
             />
           </StyledTooltip>

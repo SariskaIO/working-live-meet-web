@@ -19,6 +19,7 @@ const Video = (props) => {
       style={{
         left: "-1px",
         top: "-1px",
+        
         position: props.position || "absolute",
         width: isPipEnabled ? 0 : "calc(100% + 2px)",
         display: isPipEnabled ? "none": "initial",

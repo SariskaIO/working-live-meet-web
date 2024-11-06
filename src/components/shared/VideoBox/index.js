@@ -237,7 +237,7 @@ const VideoBox = ({
             left: `-${videoStreamDiff / 2}px`,
             position: "absolute",
             right: 0,
-            top: 0,
+            top:"-10px",
             bottom: 0,
             backgroundColor: "black",
             margin: "auto",
@@ -246,10 +246,12 @@ const VideoBox = ({
         >
           <Video isPresenter={isPresenter}isPipEnabled={isPipEnabled} track={videoTrack} />
         </Box>
-      ) : (<Box
+      ) : (
+      <Box
           style={{
             width: getVideoContainerWidth(videoStreamHeight),
             height: `${videoStreamHeight}px`,
+            top:"10px",
             left: `-${videoStreamDiff / 2}px`,
             position: "absolute"
           }}

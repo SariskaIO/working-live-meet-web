@@ -71,7 +71,7 @@ const JoinTrack = ({ tracks, name }) => {
            borderRadius: 0
        },
        "& .rightControls": {
-          display: "none"
+          display: "none",
        },
        "& .userDetails": {
           display: "none"

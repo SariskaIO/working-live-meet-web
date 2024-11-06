@@ -11,7 +11,7 @@ import { toggleCollaboration } from "../store/actions/media";
 import SariskaMediaTransport from "sariska-media-transport/dist/esm/SariskaMediaTransport";
 import { store } from "../store";
 import { localTrackMutedChanged } from "../store/actions/track";
-import { togglePip } from "../store/actions/layout";
+import {  togglePip } from "../store/actions/layout";
 
 const Compressor = require("compressorjs");
 
@@ -980,7 +980,7 @@ function startWorker() {
   const dst_cnv = document.createElement("canvas");
   dst_cnv.width = "640";
   dst_cnv.height = "480";
-
+  
   function renderCanvas(participantId, keyName, kind) {
     for (const [action, handler] of actionHandlers) {
       try {
@@ -1226,3 +1226,5 @@ export const startPipMode = async () => {
 };
 
 export const exitPipMode = async () => {};
+
+
