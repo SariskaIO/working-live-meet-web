@@ -50,6 +50,9 @@ const LobbyRoom = ({ tracks }) => {
   const dispatch = useDispatch();
   const [loading, setLoading] = useState(false);
   const [meetingTitle, setMeetingTitle] = useState("");
+  const [warning, setWarning] = useState("");
+  const [popupPosition, setPopupPosition] = useState(0); 
+  const inputRef = useRef(null); 
   const [name, setName] = useState("");
   const [buttonText, setButtonText] = useState("Start Meeting");
   const [accessDenied, setAccessDenied] = useState(false);
@@ -249,13 +252,83 @@ const LobbyRoom = ({ tracks }) => {
       left: "50%",
       marginLeft: -12,
     },
+    wrapper: {
+      display: "flex",
+      flexDirection: "column",
+      position: "relative", 
+    },
+    textBox: {
+      position: "relative",
+    },
+    textInput: {
+      width: "100%",
+      padding: "10px",
+      borderRadius: "4px",
+      border: "1px solid #ccc",
+     backgroundColor: "white", 
+      transition: "background-color 0.3s ease", 
+      "&.error": {
+        backgroundColor: "#ffe6e6", 
+        borderColor: "red", 
+    },
+  },
+  popup: {
+    position: "absolute",
+    // top: "33%",
+    top:"calc(33% + 5px)",
+    left: "0", 
+    width: "100%",
+    backgroundColor: "#f8d7da", 
+    color: "#721c24", 
+     border: "1px solid #f5c6cb",
+    padding: "8px",
+    borderRadius: "4px",
+    fontSize: "0.650rem",
+    textAlign: "center",
+    opacity: 0,
+    visibility: "hidden", 
+    transition: "opacity 0.3s ease, visibility 0.3s ease", 
+    pointerEvents: "none", 
+    zIndex: 10,
+  },
+  popupVisible: {
+    opacity: 1, 
+    visibility: "visible", 
+  },
+  arrow: {
+    position: "absolute",
+    top: "-5px",
+    left: "15%", 
+    transform: "translateX(-50%)", 
+    width: "0",
+    height: "0",
+    borderLeft: "5px solid transparent", 
+    borderRight: "5px solid transparent", 
+    borderTop: "5px solid #f8d7da", 
+  },
   }));
 
   const classes = useStyles();
 
+  // const handleTitleChange = (e) => {
+  //   setMeetingTitle(trimSpace(e.target.value.toLowerCase()));
+  // };
   const handleTitleChange = (e) => {
-    setMeetingTitle(trimSpace(e.target.value.toLowerCase()));
+    const title = e.target.value.toLowerCase();
+    if (title.includes(" ")) {
+      setWarning("Spaces are not allowed in the meeting name. Please use 'hyphens' or 'underscores' instead.");
+      const cursorPosition = e.target.selectionStart; 
+      const inputWidth = inputRef.current.offsetWidth; 
+      const charWidth = inputWidth / meetingTitle.length; 
+      setPopupPosition(cursorPosition * charWidth); 
+    } else {
+      setWarning("");
+    }
+    setMeetingTitle(trimSpace(title));
   };
+
+  const trimSpace = (str) => str.replace(/\s+/g, "");
+
 
   const handleUserNameChange = (e) => {
     setName(e.target.value);
@@ -507,35 +580,29 @@ const LobbyRoom = ({ tracks }) => {
             <Box className={classes.textBox}>
               {!queryParams.meetingId ? <>
               <TextInput
+                ref={inputRef}
                 onKeyPress={(e) => {
                   if (e.key === "Enter") {
                     e.preventDefault();
                     handleSubmit();
                   }
-                  // if (e.charCode === 32) {
-                  //   dispatch(
-                  //     showNotification({
-                  //       message: "Space is not allowed",
-                  //       severity: "warning",
-                  //       autoHide: true,
-                  //     })
-                  //   );
-                  // // } else if (detectUpperCaseChar(e.key)) {
-                  // //   dispatch(
-                  // //     showNotification({
-                  // //       message: "Capital Letter is not allowed",
-                  // //       severity: "warning",
-                  // //       autoHide: true,
-                  // //     })
-                  // //   );
-                  // }
                 }}
                 label="Meeting Title"
                 width="20vw"
                 value={meetingTitle}
                 onChange={handleTitleChange}
-              />
-              </> : 
+                className={`${classes.textInput} ${warning ? "error" : ""}`}
+                />
+                {warning && (
+                  <div
+                    className={`${classes.popup} ${warning ? classes.popupVisible : ""}`}
+                    style={{ left: `${popupPosition}px` }} // Dynamically adjust the left position of the popup
+                  >
+                    <div className={classes.arrow}></div>
+                    {warning}
+                  </div>
+                )}
+                </> : 
               null}
               <Box className={classes.userBox}>
                 <TextInput

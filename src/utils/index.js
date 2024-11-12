@@ -1222,8 +1222,10 @@ function startWorker() {
 }
 
 export const startPipMode = async () => {
-  startWorker();
+  startWorker(); 
 };
+ 
+
 
 export const exitPipMode = async () => {};
 
