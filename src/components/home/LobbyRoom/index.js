@@ -277,13 +277,13 @@ const LobbyRoom = ({ tracks }) => {
     // top: "33%",
     top:"calc(33% + 5px)",
     left: "0", 
-    width: "100%",
+    width: "95%",
     backgroundColor: "#f8d7da", 
     color: "#721c24", 
      border: "1px solid #f5c6cb",
     padding: "8px",
     borderRadius: "4px",
-    fontSize: "0.650rem",
+    fontSize: "0.765rem",
     textAlign: "center",
     opacity: 0,
     visibility: "hidden", 
@@ -316,8 +316,14 @@ const LobbyRoom = ({ tracks }) => {
   const handleTitleChange = (e) => {
     const title = e.target.value.toLowerCase();
     if (title.includes(" ")) {
-      setWarning("Spaces are not allowed in the meeting name. Please use 'hyphens' or 'underscores' instead.");
-      const cursorPosition = e.target.selectionStart; 
+      setWarning(
+        <>
+          Spaces are not allowed in the meeting name.
+          <br />
+          Please use 'hyphens' or 'underscores' instead.
+        </>
+      );
+            const cursorPosition = e.target.selectionStart; 
       const inputWidth = inputRef.current.offsetWidth; 
       const charWidth = inputWidth / meetingTitle.length; 
       setPopupPosition(cursorPosition * charWidth); 

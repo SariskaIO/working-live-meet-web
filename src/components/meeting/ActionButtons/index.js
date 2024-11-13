@@ -1065,7 +1065,9 @@ const ActionButtons = ({ dominantSpeakerId }) => {
         <Box className={classes.infoContainer}>
           <Box>{time}</Box>
           <Box className={classes.separator}>|</Box>
-          <Box>{profile.meetingTitle}</Box>
+          <Box>{profile}
+
+          </Box>
         </Box>
       </Hidden>
       <Hidden smDown>
