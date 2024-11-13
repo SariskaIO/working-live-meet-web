@@ -318,8 +318,7 @@ const LobbyRoom = ({ tracks }) => {
     if (title.includes(" ")) {
       setWarning(
         <>
-          Spaces are not allowed in the meeting name.
-          <br />
+          Spaces and Capital Letters are not allowed in the meeting name.
           Please use 'hyphens' or 'underscores' instead.
         </>
       );
