@@ -20,7 +20,7 @@ const Video = (props) => {
         left: "-1px",
         top: "-1px",
         position: props.position || "absolute",
-        width: isPipEnabled ? 0 : "calc(100% + 2px)",
+        width: isPipEnabled ? 0 : isPresenter ? "calc(100% - 47px)" : "calc(100% + 2px)",
         display: isPipEnabled ? "none": "initial",
         height: props.height || "calc(100% + 2px)",
         objectFit: "contain",
