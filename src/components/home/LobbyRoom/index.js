@@ -17,7 +17,8 @@ import {
   getToken,
   trimSpace,
   detectUpperCaseChar,
-  getRandomColor
+  getRandomColor,
+  containsCapitalLetter
 } from "../../../utils";
 import { addThumbnailColor } from "../../../store/actions/color";
 import { useDispatch, useSelector } from "react-redux";
@@ -248,13 +249,34 @@ const LobbyRoom = ({ tracks }) => {
       bottom: '4.5vh',
       left: "50%",
       marginLeft: -12,
-    },
+    }
   }));
 
   const classes = useStyles();
 
   const handleTitleChange = (e) => {
-    setMeetingTitle(trimSpace(e.target.value.toLowerCase()));
+    const value = e.target.value;
+    if(value.includes(" ")){
+      dispatch(
+        showNotification({
+          message: "Space is not allowed",
+          severity: "warning",
+          autoHide: true,
+        })
+      );
+      return;
+    }
+    if(containsCapitalLetter(value)){
+      dispatch(
+        showNotification({
+          message: "Capital Letter is not allowed",
+          severity: "warning",
+          autoHide: true,
+        })
+      );
+      return;
+    }
+    setMeetingTitle(trimSpace(value));
   };
 
   const handleUserNameChange = (e) => {
@@ -419,7 +441,7 @@ const LobbyRoom = ({ tracks }) => {
 
   if (iAmRecorder && !meetingTitle) {
     setName("recorder");
-    setMeetingTitle(queryParams.meetingId);
+    setMeetingTitle(queryParams.meetingId.toLowerCase());
   }
 
   useEffect(() => {
@@ -440,7 +462,7 @@ const LobbyRoom = ({ tracks }) => {
   useEffect(() => {
     if (queryParams.meetingId) {
       setButtonText("Join Meeting");
-      setMeetingTitle(queryParams.meetingId);
+      setMeetingTitle(queryParams.meetingId.toLowerCase());
     }
     setName(profile.name);
   }, [profile?.name]);
@@ -474,7 +496,7 @@ const LobbyRoom = ({ tracks }) => {
         </Hidden>
         <Box>
         {queryParams.meetingId ? 
-          <Typography className={classes.headerJoin}>Join {queryParams.meetingId}</Typography>
+          <Typography className={classes.headerJoin}>Join {queryParams.meetingId.toLowerCase()}</Typography>
           :
           <Typography className={classes.header}>Create Meeting</Typography>
         }
