@@ -12,7 +12,7 @@ const useStyles = makeStyles((theme) => ({
   root: {
     position: 'absolute',
     display: 'flex', 
-    justifyContent: 'center', 
+    justifyContent: 'flex-end', 
     alignItems: 'center', 
     zIndex: 10, 
     width: '100%'
@@ -23,7 +23,7 @@ const useStyles = makeStyles((theme) => ({
       display: 'flex', 
       justifyContent: 'center', 
       alignItems: 'center', 
-      background: color.lightgray1,
+    //  background: color.lightgray1,
       padding: '0.5rem 1rem', 
       borderRadius: '1.5rem'
   }
@@ -52,16 +52,18 @@ const ParticipantFeaturesBox = ({pinnedParticipant, participantDetails, isPresen
   };
 
   return (
-    <Box className={classnames(classes.root, { rightControls: true })} style={{
-        height: `${height}px`
-    }}>
+    <Box className={classnames(classes.root, { rightControls: true })} 
+    // style={{
+    //     height: `${height}px`
+    // }}
+    >
           <Box className={classes.container}>
-            <Box sx={{mr: 2}}>
+            {/* <Box sx={{mr: 2}}>
               <MuteParticipant mediaType={'audio'} isMuted={audioTrack?.isMuted()} toggleMute={toggleParticipantFeature} id={participantDetails?.id} />
             </Box>
             <Box sx={{mr: 2}}>
               <MuteParticipant mediaType={'video'} isMuted={videoTrack?.isMuted()} toggleMute={toggleParticipantFeature} id={participantDetails?.id}/>
-            </Box>
+            </Box> */}
             <Box>
                 <PinParticipant
                   participantId={participantDetails?.id}
