@@ -1232,7 +1232,10 @@ function startWorker() {
     video.style.position = 'fixed';
     video.style.top = 0;
     await video.play();
-    video.requestPictureInPicture();
+    video.requestPictureInPicture().then(() => {
+        video.style.transform = "scaleX(-1)";
+    }).catch(console.error);
+    video.style.transform = "scaleX(-1)";
   });
 
   video.addEventListener(
