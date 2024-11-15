@@ -64,20 +64,24 @@ function render(context, frame1, frame2, participantCount, user1, user2) {
         if (frame1) {
           underflow1 = false;  
         //  context.rotate((90 * Math.PI) / 180);
-          context.drawImage( frame1, 0, 0, frame1.codedWidth, frame1.codedHeight, 0, 0, 360, 240);
+
+          context.scale(-1, 1);
+          context.drawImage( frame1, 0, 0, frame1.codedWidth, frame1.codedHeight, -360, 0, 360, 240);
           frame1.close();   
         }
 
         if (frame2) {
           underflow2 = false;  
-          context.drawImage( frame2, 0, 0, frame2.codedWidth, frame2.codedHeight, 0, 240, 360, 240);
+          context.scale(-1, 1);
+          context.drawImage( frame2, 0, 0, frame2.codedWidth, frame2.codedHeight, -360, 240, 360, 240);
           frame2.close();    
         }       
     } else if (frame1 && !frame2) { 
       if (frame1) {
         underflow1 = false;  
        // context.rotate((90 * Math.PI) / 180);
-        context.drawImage( frame1, 0, 0, frame1.codedWidth, frame1.codedHeight, 0, 0, 360, 240);
+        context.scale(-1, 1);
+        context.drawImage( frame1, 0, 0, frame1.codedWidth, frame1.codedHeight, -360, 0, 360, 240);
         frame1.close();   
       }
       drawNameWithMuteState(user2.name, user2.color, context, 180, 270);
@@ -85,7 +89,8 @@ function render(context, frame1, frame2, participantCount, user1, user2) {
       drawNameWithMuteState(user1.name, user1.color, context, 180,  90);
       if (frame2) {
         underflow2 = false;  
-        context.drawImage( frame2, 0, 0, frame2.codedWidth, frame2.codedHeight, 0, 240, 360, 240);
+        context.scale(-1, 1);
+        context.drawImage( frame2, 0, 0, frame2.codedWidth, frame2.codedHeight, -360, 240, 360, 240);
         frame2.close();    
       }   
     } else {
@@ -98,7 +103,8 @@ function render(context, frame1, frame2, participantCount, user1, user2) {
     if (frame1) {
         underflow1 = false;  
        //(180*Math.PI/180);
-        context.drawImage( frame1, 0, 0, frame1.codedWidth, frame1.codedHeight, 0, 0, 360, 240);
+        context.scale(-1, 1);
+        context.drawImage( frame1, 0, 0, frame1.codedWidth, frame1.codedHeight, -360, 0, 360, 240);
         frame1.close();   
     } else {
       drawNameWithMuteState(user1.name, user1.color, context, 180, 90);

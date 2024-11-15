@@ -27,7 +27,7 @@ const Video = (props) => {
         borderRadius: "8px",
       //  transform: isPipEnabled ? 'rotateY(180deg)' : isPresenter ? 'initial' : `scaleX(-1)`
 
-         transform: isPresenter ? 'initial' : `scaleX(-1)`,
+         transform: `rotateY(180deg)`,
       }}
     />
   );
