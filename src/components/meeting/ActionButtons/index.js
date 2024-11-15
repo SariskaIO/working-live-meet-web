@@ -1167,7 +1167,7 @@ const ActionButtons = ({ dominantSpeakerId }) => {
                 } else {
                   startPipMode();
                 }
-              }}
+              }}  
               sx={{
                 fill: layout.pipEnabled ? color.primaryColor : color.white,
                 "&:hover": { pointer: "cursor" },

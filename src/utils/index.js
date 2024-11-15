@@ -1225,4 +1225,21 @@ export const startPipMode = async () => {
   startWorker();
 };
 
-export const exitPipMode = async () => {};
+export const exitPipMode = async () => {
+  if (document.pictureInPictureElement) {
+      document.exitPictureInPicture()
+          .then(() => {
+              console.log("Exited PiP mode");
+              try {
+                isPipEnabled = false;
+                store.dispatch(togglePip(false));
+               
+              } catch (e) {
+                console.log('error in pip', e)
+              }
+          })
+          .catch((error) => {
+              console.error("Failed to exit PiP mode:", error);
+          });
+  }
+};
