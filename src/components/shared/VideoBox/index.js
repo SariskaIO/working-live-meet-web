@@ -11,12 +11,15 @@ import Audio from "../Audio";
 import PanTool from "@material-ui/icons/PanTool";
 import {useDispatch, useSelector } from "react-redux";
 import classnames from "classnames";
-import { calculateSteamHeightAndExtraDiff, isMobileOrTab } from "../../../utils";
+import { calculateSteamHeightAndExtraDiff, isMobileOrTab, startPipMode, exitPipMode, } from "../../../utils";
 import SubTitle from "../SubTitle";
+import FancyButton from "../FancyButton";
 import { useDocumentSize } from "../../../hooks/useDocumentSize";
 import ParticipantFeaturesBox from "../ParticipantFeaturesBox";
 import MutedVideo from "../MutedVideo";
 import AudioLevelIndicator from "../AudioIndicator";
+import { layout } from "../../../store/reducers/layout";
+import PIPFallbackScreen from "../PIPFallbackScreen";
 
 const VideoBox = ({
   participantTracks,
@@ -245,7 +248,8 @@ const VideoBox = ({
           }}
           className={classes.videoWrapper}
         >
-          <Video isPresenter={isPresenter}isPipEnabled={isPipEnabled} track={videoTrack} />
+          {/* <PIPFallbackScreen /> */}
+          <Video isPresenter={isPresenter} isPipEnabled={isPipEnabled} track={videoTrack} />
         </Box>
       ) : (<Box
           style={{
@@ -256,7 +260,7 @@ const VideoBox = ({
           }}
           className={classes.videoWrapper}
         >
-          <Video isPresenter={isPresenter}isPipEnabled={isPipEnabled} track={videoTrack} />
+          <Video isPresenter={isPresenter} isPipEnabled={isPipEnabled} track={videoTrack} />
         </Box>
       )
       }

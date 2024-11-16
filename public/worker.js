@@ -22,7 +22,6 @@ function renderMultipleTracks(canvas, reader1, reader2, user1, user2) {
 
       Promise.allSettled(promises).then((values) => {
         const ctx = canvas.getContext("2d", { alpha: true });
-        ctx.rotate(- 180 * Math.PI / 180);
         render(ctx, values[0]?.value?.value, values[1]?.value?.value, values.length, user1, user2);
         if (!values[0]?.value?.value && !values[1]?.value?.value) {
           timeout = setTimeout( ()=>readChunk() ,16);
@@ -57,38 +56,42 @@ function render(context, frame1, frame2, participantCount, user1, user2) {
   if (participantCount === 2) {
     context.canvas.width  = 360;
     context.canvas.height = 480;  
-   // context.canvas.bottom = 200;
     
     if (frame1 && frame2) {
         context.clearRect(0, 0, 360, 480);
+        context.scale(-1, 1);
         if (frame1) {
           underflow1 = false;  
-        //  context.rotate((90 * Math.PI) / 180);
-          context.drawImage( frame1, 0, 0, frame1.codedWidth, frame1.codedHeight, 0, 0, 360, 240);
+          context.drawImage( frame1, 0, 0, frame1.codedWidth, frame1.codedHeight, -360, 0, 360, 240);
           frame1.close();   
         }
 
         if (frame2) {
           underflow2 = false;  
-          context.drawImage( frame2, 0, 0, frame2.codedWidth, frame2.codedHeight, 0, 240, 360, 240);
+          context.drawImage( frame2, 0, 0, frame2.codedWidth, frame2.codedHeight, -360, 240, 360, 240);
           frame2.close();    
         }       
     } else if (frame1 && !frame2) { 
       if (frame1) {
+        context.scale(-1, 1);
         underflow1 = false;  
-       // context.rotate((90 * Math.PI) / 180);
-        context.drawImage( frame1, 0, 0, frame1.codedWidth, frame1.codedHeight, 0, 0, 360, 240);
+        context.drawImage( frame1, 0, 0, frame1.codedWidth, frame1.codedHeight, -360, 0, 360, 240);
         frame1.close();   
       }
-      drawNameWithMuteState(user2.name, user2.color, context, 180, 270);
-    } else if (!frame1 && frame2) {       
+
+      context.save();
+      drawNameWithMuteState(user2.name, user2.color, context, 180, 330, true);
+    } else if (!frame1 && frame2) {    
+      context.save();
       drawNameWithMuteState(user1.name, user1.color, context, 180,  90);
       if (frame2) {
         underflow2 = false;  
-        context.drawImage( frame2, 0, 0, frame2.codedWidth, frame2.codedHeight, 0, 240, 360, 240);
+        context.scale(-1, 1);
+        context.drawImage( frame2, 0, 0, frame2.codedWidth, frame2.codedHeight, -360, 240, 360, 240);
         frame2.close();    
       }   
     } else {
+      context.save();
       drawNameWithMuteState(user1.name, user1.color, context, 180,  90);
       drawNameWithMuteState(user2.name, user2.color, context, 180, 270);
     }
@@ -97,31 +100,46 @@ function render(context, frame1, frame2, participantCount, user1, user2) {
     context.canvas.height = 240;
     if (frame1) {
         underflow1 = false;  
-       //(180*Math.PI/180);
-        context.drawImage( frame1, 0, 0, frame1.codedWidth, frame1.codedHeight, 0, 0, 360, 240);
+        context.scale(-1, 1);
+        context.drawImage( frame1, 0, 0, frame1.codedWidth, frame1.codedHeight, -360, 0, 360, 240);
         frame1.close();   
     } else {
+      context.save();
       drawNameWithMuteState(user1.name, user1.color, context, 180, 90);
     }
   }
 }
 
-async function drawNameWithMuteState(name, color, context, centerX, centerY) { 
+async function drawNameWithMuteState(name, color, context, centerX, centerY, isPostDraw) { 
+  context.scale(-1, 1);  
+  let newCenterX = isPostDraw ?  centerX : centerX - 360;
   var radius = 30;
   context.fillStyle = color;
-  context.arc(centerX , centerY , radius, 0, 2 * Math.PI, false);
+  context.arc(newCenterX , centerY , radius, 0, 2 * Math.PI, false);
   context.fill();
-  
-  context.beginPath();
-  context.font = "20px Arial";
-  context.fillStyle = "white";
-  context.textAlign = "center";
-  context.fillText(name && name[0]?.toUpperCase(), centerX, centerY + 7.5 );
+  if(!isPostDraw){
+    // Move to the text position and apply a local transformation
+    context.translate(newCenterX, centerY); // Move the origin to the text position
+    context.scale(-1, 1);    // Flip horizontally
+    context.translate(-newCenterX , -centerY); // Restore the origin back
+  }
 
   context.beginPath();
-  context.letterSpacing = "4px";
-  context.font = "15px Arial";
+  context.font = "20px Noto Sans Korean";
   context.fillStyle = "white";
   context.textAlign = "center";
-  context.fillText(name, 180, centerY + 70 );
+  context.fillText(name && name[0]?.toUpperCase(), newCenterX, centerY + 7.5 );
+
+  context.beginPath();
+  context.letterSpacing = "2px";
+  context.font = "20px Noto Sans Korean";
+ // context.fillStyle = "white";
+  context.textAlign = "center";
+  const gradient = context.createLinearGradient(0, 0, canvas.width, 0);
+  gradient.addColorStop(0, '#718EFF');
+  gradient.addColorStop(1, "#7D73FF");
+  context.fillStyle = gradient;
+  context.fillText(name, newCenterX, centerY + 70 );
+  context.direction = 'rtl'
+  context.restore();
 }

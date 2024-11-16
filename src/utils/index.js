@@ -1151,7 +1151,7 @@ function startWorker() {
     if (reader2) {
       ownershipArray.push(reader2);
     }
-
+    
     worker.postMessage(
       {
         user1: user1
@@ -1164,9 +1164,9 @@ function startWorker() {
           ? {
               name: remoteParticipantName,
               color:
-                store.getState()?.conference?.participants[
-                  Object.keys(store.getState().remoteTrack)[0]
-                ]?._identity?.user?.avatar,
+                store.getState()?.conference?.participants?.get(
+                  Object.keys(store.getState().remoteTrack)[0])
+                ?._identity?.user?.avatar,
             }
           : undefined,
         frame_source1: user1 ? reader1 : undefined,
@@ -1232,7 +1232,10 @@ function startWorker() {
     video.style.position = 'fixed';
     video.style.top = 0;
     await video.play();
-    video.requestPictureInPicture();
+    video.requestPictureInPicture().then(() => {
+        video.style.transform = "scaleX(-1)";
+    }).catch(console.error);
+    video.style.transform = "scaleX(-1)";
   });
 
   video.addEventListener(
