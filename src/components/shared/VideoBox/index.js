@@ -166,13 +166,6 @@ const VideoBox = ({
   const { pinnedParticipant, raisedHandParticipantIds } = useSelector(
     (state) => state.layout
   );
-  const [buttonText, setButtonText] = useState();
-  const [isCollaborationActive, setIsCollaborationActive] = useState(false);
-const remoteTrack = useSelector((state) => state.remoteTrack);
-const remoteTracks = remoteTrack[Object.keys(remoteTrack)[0]];
-const remoteVideoTrack = remoteTracks?.find(
-  (track) => track.getType() === "video"
-);
   let videoTrack = isPresenter
     ? participantTracks?.find((track) => track?.getVideoType() === "desktop")
     : participantTracks?.find((track) => track?.getType() === "video");
@@ -255,8 +248,8 @@ const remoteVideoTrack = remoteTracks?.find(
           }}
           className={classes.videoWrapper}
         >
-          <PIPFallbackScreen />
-          <Video isPresenter={isPresenter} isPipEnabled={isPipEnabled} track={isPipEnabled ? null : videoTrack} />
+          {/* <PIPFallbackScreen /> */}
+          <Video isPresenter={isPresenter} isPipEnabled={isPipEnabled} track={videoTrack} />
         </Box>
       ) : (<Box
           style={{

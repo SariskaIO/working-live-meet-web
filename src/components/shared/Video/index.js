@@ -25,9 +25,7 @@ const Video = (props) => {
         height: props.height || "calc(100% + 2px)",
         objectFit: "contain",
         borderRadius: "8px",
-      //  transform: isPipEnabled ? 'rotateY(180deg)' : isPresenter ? 'initial' : `scaleX(-1)`
-
-         transform: `rotateY(180deg)`,
+        transform: isPipEnabled ? 'rotateY(180deg)' : isPresenter ? 'initial' : `scaleX(-1)`
       }}
     />
   );

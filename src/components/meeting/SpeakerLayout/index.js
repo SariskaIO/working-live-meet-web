@@ -8,6 +8,7 @@ import {useDocumentSize} from "../../../hooks/useDocumentSize";
 import classnames from "classnames";
 import * as Constants from "../../../constants";
 import { getParticipantCountsWORecorder, getRecorderId } from '../../../utils';
+import PIPFallbackScreen from '../../shared/PIPFallbackScreen';
 
 const useStyles = makeStyles((theme) => ({
     root: {
@@ -22,6 +23,7 @@ const useStyles = makeStyles((theme) => ({
 const SpeakerLayout = ({dominantSpeakerId}) => {
     const conference = useSelector(state => state.conference);
     const layout = useSelector(state=>state.layout);
+    const isPipEnabled = useSelector(state => state.layout?.pipEnabled);
     const totalParticipantGrid = conference?.getParticipantCount()+layout.presenterParticipantIds.length;
     let {viewportWidth, viewportHeight} = useWindowResize(totalParticipantGrid);
     const {documentWidth, documentHeight} = useDocumentSize();
@@ -86,7 +88,8 @@ const SpeakerLayout = ({dominantSpeakerId}) => {
     }
     
     return (
-        <Box style={{justifyContent}}  className={activeClasses} >
+        <Box style={{justifyContent, height: isPipEnabled ? 'calc(100vh - 48px)' : 'inherit'}}  className={activeClasses} >
+            {isPipEnabled ? <PIPFallbackScreen /> : <>
             <VideoBox
                 isFilmstrip={true}
                 isTranscription={true}
@@ -109,6 +112,7 @@ const SpeakerLayout = ({dominantSpeakerId}) => {
                 localTracks={localTracks} 
                 remoteTracks={remoteTracks}
             />
+            </>}
         </Box>
     )
 }

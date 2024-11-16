@@ -1151,7 +1151,7 @@ function startWorker() {
     if (reader2) {
       ownershipArray.push(reader2);
     }
-
+    
     worker.postMessage(
       {
         user1: user1
@@ -1164,9 +1164,9 @@ function startWorker() {
           ? {
               name: remoteParticipantName,
               color:
-                store.getState()?.conference?.participants[
-                  Object.keys(store.getState().remoteTrack)[0]
-                ]?._identity?.user?.avatar,
+                store.getState()?.conference?.participants?.get(
+                  Object.keys(store.getState().remoteTrack)[0])
+                ?._identity?.user?.avatar,
             }
           : undefined,
         frame_source1: user1 ? reader1 : undefined,

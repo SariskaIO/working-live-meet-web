@@ -1,6 +1,5 @@
 import { Button, makeStyles, Typography } from '@material-ui/core';
 import React from 'react'
-import StyledTooltip from '../StyledTooltip';
 import meetingSVG from "../../../assets/images/meeting/meeting.svg";
 import { exitPipMode } from "../../../utils";
 import { color } from '../../../assets/styles/_color';
@@ -30,11 +29,12 @@ const useStyles = makeStyles((theme) => ({
               border: `1px solid ${color.primaryLight}`,
               padding: "4px 40px",
               borderRadius: "10px",
-              textTransform: "capitalize",
+              textTransform: "none",
               marginTop: theme.spacing(3),
               width: "251px", // Set your width here
               transition: "0.1s all ease",
               fontSize: "15px", // Customize font size here
+              
               "&:hover": {
                 background: color.mainGradient,
                 color: color.white,
@@ -77,13 +77,11 @@ const PIPFallbackScreen = () => {
             />
           </div>
           <Typography variant="h5" style={{ marginBottom: "8px" }}>
-            Your Meet call is in another window
+          Your Meet call is open in another window. 
           </Typography>
           <Typography variant="body5">
-            Using picture-in-picture lets you stay in the call while you do
-            other things
+            Picture-in-picture mode lets you stay connected to the call while multitasking.
             </Typography>
-          <StyledTooltip>
             <Button
               style={{ zIndex: 100 }}
               className={classes.buttonStyle}
@@ -93,7 +91,6 @@ const PIPFallbackScreen = () => {
             >
               Bring the call back here
             </Button>
-          </StyledTooltip>
     </div>
   )
 }
