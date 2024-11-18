@@ -1,4 +1,4 @@
-import React from 'react';
+import React ,{useEffect}from 'react';
 import Button from '@material-ui/core/Button';
 import Card from '@material-ui/core/Card';
 import {makeStyles} from "@material-ui/core";
@@ -38,16 +38,33 @@ const useStyles = makeStyles((theme) => ({
 export default function PermissionDialog({displayName, allowLobbyAccess, denyLobbyAccess, userId}) {
     const classes = useStyles();
 
-    return (
-        <div className={classes.root}>
-            <Card className={classes.card}>
-                <div>{displayName} wants to join </div>
-                <div className={classes.controls}>
-                    <FancyButton buttonText={'Deny'} onClick={()=>denyLobbyAccess(userId)} width="100px" />
-                    &nbsp; &nbsp;
-                    <FancyButton buttonText={'Allow'} onClick={()=>allowLobbyAccess(userId)} width="100px"/>
-                </div>
-            </Card>
-        </div>
-    );
+//     return (
+//         <div className={classes.root}>
+//             <Card className={classes.card}>
+//                 <div>{displayName} wants to join </div>
+//                 <div className={classes.controls}>
+//                     <FancyButton buttonText={'Deny'} onClick={()=>denyLobbyAccess(userId)} width="100px" />
+//                     &nbsp; &nbsp;
+//                     <FancyButton buttonText={'Allow'} onClick={()=>allowLobbyAccess(userId)} width="100px"/>
+//                 </div>
+//             </Card>
+//         </div>
+//     );
+// }
+
+useEffect(() => {
+    if (allowLobbyAccess && userId) {
+        allowLobbyAccess(userId);
+    }
+}, [allowLobbyAccess, userId]);
+
+return (
+    <div className={classes.root}>
+        <Card className={classes.card}>
+            <div className={classes.message}>
+                {displayName} has been allowed to join the lobby.
+            </div>
+        </Card>
+    </div>
+);
 }
