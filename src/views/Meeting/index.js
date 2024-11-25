@@ -339,13 +339,13 @@ const Meeting = () => {
     conference.addEventListener(
       SariskaMediaTransport.events.conference.LOBBY_USER_JOINED,
       (id, displayName) => {
-        if(displayName === 'recorder'){
-          return conference.lobbyApproveAccess(id);
-        }
+        // if(displayName === 'recorder'){
+        //   return conference.lobbyApproveAccess(id);
+        // }
         new Audio(
           "https://sdk.sariska.io/knock_0b1ea0a45173ae6c10b084bbca23bae2.ogg"
         ).play();
-        setLobbyUser((lobbyUser) => [...lobbyUser, { id, displayName }]);
+       // setLobbyUser((lobbyUser) => [...lobbyUser, { id, displayName }]);
       }
     );
 
@@ -432,9 +432,9 @@ const Meeting = () => {
           data.event === "LOBBY-ACCESS-GRANTED" ||
           data.event === "LOBBY-ACCESS-DENIED"
         ) {
-          setLobbyUser((lobbyUser) =>
-            lobbyUser.filter((item) => item.displayName !== data.name)
-          );
+          // setLobbyUser((lobbyUser) =>
+          //   lobbyUser.filter((item) => item.displayName !== data.name)
+          // );
         }
       }
     );
