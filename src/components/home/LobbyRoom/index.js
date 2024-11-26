@@ -371,7 +371,7 @@ const LobbyRoom = ({ tracks }) => {
       SariskaMediaTransport.events.conference.USER_ROLE_CHANGED,
       (id, role) => {
         if (conference.isModerator() && !testMode) {
-          conference.enableLobby();
+        //  conference.enableLobby();
           history.push(`/${meetingTitle}`);
         } else {
           history.push(`/${meetingTitle}`);

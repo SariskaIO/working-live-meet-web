@@ -88,7 +88,7 @@ const SpeakerLayout = ({dominantSpeakerId}) => {
     }
     
     return (
-        <Box style={{justifyContent, height: isPipEnabled ? 'calc(100vh - 48px)' : 'inherit'}}  className={activeClasses} >
+        <Box style={{justifyContent, height: isPipEnabled ? 'calc(100vh - 84px)' : 'inherit'}}  className={activeClasses} >
             {isPipEnabled ? <PIPFallbackScreen /> : <>
             <VideoBox
                 isFilmstrip={true}

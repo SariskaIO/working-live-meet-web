@@ -13,8 +13,10 @@ import DrawerBox from '../DrawerBox';
 import ParticipantDetails from '../ParticipantDetails';
 import { color } from '../../../assets/styles/_color';
 import { PARTICIPANTS_VISIBLE_ON_MOBILE } from '../../../constants';
+import PIPFallbackScreen from '../PIPFallbackScreen';
 
 const ParticipantGrid = ({ dominantSpeakerId }) => {
+    const isPipEnabled = useSelector(state => state.layout?.pipEnabled);
     const [participantState, setParticipantState] = React.useState({
         right: false,
       });
@@ -28,6 +30,7 @@ const ParticipantGrid = ({ dominantSpeakerId }) => {
         },
         container: {
             position: "relative",
+            justifyContent: isPipEnabled && 'center',
             [theme.breakpoints.down("md")]: {
                 justifyContent: 'center'
             }
@@ -125,6 +128,8 @@ const ParticipantGrid = ({ dominantSpeakerId }) => {
     return (
         <Box className={classes.root}>
             <Grid className={classes.container} style={{ height: viewportHeight, width: viewportWidth }} container item>
+            {/* <Box style={{justifyContent, height: isPipEnabled ? 'calc(100vh - 84px)' : 'inherit'}}  className={activeClasses} > */}
+            {isPipEnabled ? <PIPFallbackScreen /> : <>
                 {[...Array(rows)].map((x, i) =>
                     <>
                         {[...Array(columns)].map((y, j) => {
@@ -178,6 +183,7 @@ const ParticipantGrid = ({ dominantSpeakerId }) => {
                         )}
                     </>
                 )}
+                </>}
             </Grid>
         <DrawerBox
           open={participantState["right"]}

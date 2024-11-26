@@ -224,12 +224,13 @@ const ActionButtons = ({ dominantSpeakerId }) => {
     );
     setPresenting(true);
   };
-
+  
   const stopPresenting = async () => {
     const desktopTrack = localTracks.find(
       (track) => track.videoType === "desktop"
     );
     await conference.removeTrack(desktopTrack);
+    
     dispatch(
       setPresenter({ participantId: conference.myUserId(), presenter: false })
     );
