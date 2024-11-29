@@ -69,6 +69,7 @@ import {
   stopStreamingInSRSMode,
   startPipMode,
   exitPipMode,
+  isMobile,
 } from "../../../utils";
 import classNames from "classnames";
 import ParticipantDetails from "../../shared/ParticipantDetails";
@@ -191,7 +192,7 @@ const ActionButtons = ({ dominantSpeakerId }) => {
       console.error("Error muting participants:", error);
     }
   };
-
+  
   const shareScreen = async () => {
     let desktopTrack;
     try {
@@ -701,6 +702,8 @@ const ActionButtons = ({ dominantSpeakerId }) => {
 
   useEffect(() => {
     conference.getParticipantsWithoutHidden().forEach((item) => {
+
+    conference.setLocalParticipantProperty("isMobile", isMobile());
       if (item._properties?.transcribing) {
         action({ key: "caption", value: true });
       }
@@ -760,6 +763,7 @@ const ActionButtons = ({ dominantSpeakerId }) => {
         }
       }
     );
+
 
     conference.addEventListener(
       SariskaMediaTransport.events.conference.TRANSCRIPTION_STATUS_CHANGED,
