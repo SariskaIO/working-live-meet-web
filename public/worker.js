@@ -60,7 +60,6 @@ function render(context, frame1, frame2, participantCount, user1, user2) {
   let height = 270;
   let width = user2?.isMobile ? height * 9 / 16 : 480;
   let offsetWidth = - (480 + width) / 2;
-  console.log('frame2', frame2, frame2?.codedWidth, width, offsetWidth, user2, user1)
   if (participantCount === 2) {
     context.canvas.width  = 480;
     context.canvas.height = 540;  
