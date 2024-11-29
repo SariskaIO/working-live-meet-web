@@ -22,8 +22,8 @@ function renderMultipleTracks(canvas, reader1, reader2, user1, user2) {
 
       Promise.allSettled(promises).then((values) => {
         const ctx = canvas.getContext("2d", { alpha: true });
-        ctx.strokeStyle = "red"; // Border color
-        ctx.lineWidth = 5;       // Border width
+      //  ctx.strokeStyle = "red"; // Border color
+       // ctx.lineWidth = 5;       // Border width
         ctx.strokeRect(0, 0, canvas.width, canvas.height);
         render(ctx, values[0]?.value?.value, values[1]?.value?.value, values.length, user1, user2);
         if (!values[0]?.value?.value && !values[1]?.value?.value) {
@@ -57,10 +57,14 @@ self.onmessage = async function(event) {
 
 function render(context, frame1, frame2, participantCount, user1, user2) {  
   let isBothUsersMuted = false;
+  let height = 270;
+  let width = user2?.isMobile ? height * 9 / 16 : 480;
+  let offsetWidth = - (480 + width) / 2;
+  console.log('frame2', frame2, frame2?.codedWidth, width, offsetWidth, user2, user1)
   if (participantCount === 2) {
     context.canvas.width  = 480;
     context.canvas.height = 540;  
-    
+
     if (frame1 && frame2) {
         context.clearRect(0, 0, 480, 540);
         context.scale(-1, 1);
@@ -72,7 +76,7 @@ function render(context, frame1, frame2, participantCount, user1, user2) {
 
         if (frame2) {
           underflow2 = false;  
-          context.drawImage( frame2, 0, 0, frame2.codedWidth, frame2.codedHeight, -480, 270, 480, 270);
+          context.drawImage( frame2, 0, 0, frame2.codedWidth, frame2.codedHeight, offsetWidth, 270, width, 270);
           frame2.close();    
         }       
     } else if (frame1 && !frame2) { 
@@ -87,11 +91,11 @@ function render(context, frame1, frame2, participantCount, user1, user2) {
       drawNameWithMuteState(user2.name, user2.color, context, 480, 390, true);
     } else if (!frame1 && frame2) {    
       context.save();
-      drawNameWithMuteState(user1.name, user1.color, context, 480,  90);
+      drawNameWithMuteState(user1.name, user1.color, context, 480,  90, true, true, true);
       if (frame2) {
         underflow2 = false;  
         context.scale(-1, 1);
-        context.drawImage( frame2, 0, 0, frame2.codedWidth, frame2.codedHeight, -480, 270, 480, 270);
+        context.drawImage( frame2, 0, 0, frame2.codedWidth, frame2.codedHeight, offsetWidth, 270, width, 270);
         frame2.close();    
       }   
     } else {

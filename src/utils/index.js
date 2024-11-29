@@ -998,8 +998,8 @@ function startWorker() {
   const ctx = dst_cnv.getContext('2d');
   ctx.fillStyle = '#fff';
   ctx.fillRect(0, 0, dst_cnv.width, dst_cnv.height)
-  div.style.background = 'red';
-  div.style.zIndex = 9999;
+  //div.style.background = 'red';
+  //div.style.zIndex = 9999;
 
   function renderCanvas(participantId, keyName, kind) {
     for (const [action, handler] of actionHandlers) {
@@ -1139,7 +1139,7 @@ function startWorker() {
 
     worker.postMessage(
       {
-        canvas: offscreen,
+        canvas: offscreen
       },
       [offscreen]
     );
@@ -1159,21 +1159,19 @@ function startWorker() {
         user1: user1
           ? {
               name: localParticipantName,
-              color: store?.getState().profile?.color,
+              color: store?.getState().profile?.color
             }
           : undefined,
         user2: user2
           ? {
               name: remoteParticipantName,
-              color:
-                store.getState()?.conference?.participants?.get(
-                  Object.keys(store.getState().remoteTrack)[0])
-                ?._identity?.user?.avatar,
+              color: store.getState()?.conference?.participants?.get(`${key}`)?._identity?.user?.avatar,
+              isMobile: store.getState()?.conference?.participants?.get(`${key}`)?._properties.isMobile
             }
           : undefined,
         frame_source1: user1 ? reader1 : undefined,
         frame_source2: user2 ? reader2 : undefined,
-        fps: fps,
+        fps: fps
       },
       ownershipArray
     );
@@ -1225,7 +1223,7 @@ function startWorker() {
   video.addEventListener("enterpictureinpicture", (event) => {
     video.style.position = 'fixed';
     video.style.borderRadius = '25px';
-    video.style.border = '5px solid red';
+   // video.style.border = '5px solid red';
     video.style.top = 0;
     isPipEnabled = true;
     store.dispatch(togglePip(true));
@@ -1235,13 +1233,13 @@ function startWorker() {
     video.style.transform = 'scaleX(-1)';
     video.style.position = 'fixed';
     video.style.borderRadius = '25px';
-    video.style.border = '5px solid red';
+   // video.style.border = '5px solid red';
     video.style.top = 0;
     await video.play();
     video.requestPictureInPicture().then(() => {
         video.style.transform = "scaleX(-1)";
         video.style.borderRadius = '25px';
-        video.style.border = '5px solid red';
+      //  video.style.border = '5px solid red';
     }).catch(console.error);
     video.style.transform = "scaleX(-1)";
   });
